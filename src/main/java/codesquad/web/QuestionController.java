@@ -23,7 +23,7 @@ public class QuestionController {
 
 
     @GetMapping("/")
-    public String redirect(Model model){
+    public String home(Model model){
         model.addAttribute("ask", questions);
         return "/qna/index";
     }
@@ -32,12 +32,7 @@ public class QuestionController {
     public String create(Question question) {
         question.setIndex(questions.size() + 1);
         questions.add(question);
-        return "redirect:/ask";
+        return "redirect:/";
     }
 
-    @GetMapping("/ask")
-    public String list(Model model) {
-        model.addAttribute("ask", questions);
-        return "/qna/index";
-    }
 }
