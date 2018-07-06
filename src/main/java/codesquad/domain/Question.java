@@ -6,6 +6,7 @@ public class Question {
     private String writer;
     private String title;
     private String contents;
+    private int index;
     private Date date;
 
     public Question(){
@@ -38,5 +39,13 @@ public class Question {
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }
