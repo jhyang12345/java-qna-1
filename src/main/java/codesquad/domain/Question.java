@@ -1,9 +1,6 @@
 package codesquad.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -13,13 +10,23 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int index;
 
+    @Column(length=30, nullable = false)
     private String writer;
+    @Column(nullable=false)
     private String title;
+
+    @Lob
+    @Column(name = "CONTENTS", columnDefinition = "BLOB")
     private String contents;
+
     private Date date;
 
     public Question(){
         date = new Date();
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Date getDate() {
@@ -56,5 +63,12 @@ public class Question {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public void updateQuestion(Question updateQuestion) {
+        setTitle(updateQuestion.getTitle());
+        setContents(updateQuestion.getContents());
+        setWriter(updateQuestion.getWriter());
+        setDate(updateQuestion.getDate());
     }
 }

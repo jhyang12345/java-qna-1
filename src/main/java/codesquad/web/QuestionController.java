@@ -5,10 +5,7 @@ import codesquad.domain.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +13,10 @@ import java.util.List;
 @Controller
 public class QuestionController {
 
-    private List<Question> questions = new ArrayList<>();
-
     @Autowired
     private QuestionRepository questionRepository;
 
-    @PostMapping("/ask")
+    @PostMapping("/question")
     public String create(Question question) {
         questionRepository.save(question);
         return "redirect:/";
@@ -29,7 +24,7 @@ public class QuestionController {
 
     @GetMapping("/")
     public String home(Model model){
-        model.addAttribute("ask", questionRepository.findAll());
+        model.addAttribute("questions", questionRepository.findAll());
         return "/qna/index";
     }
 
@@ -39,7 +34,7 @@ public class QuestionController {
         return "/qna/show";
     }
 
-    @DeleteMapping("/questions/delete/{index}")
+    @DeleteMapping("/questions/{index}")
     public String delete(@PathVariable int index, Model model) {
         questionRepository.deleteById(index);
         return "redirect:/";
@@ -51,9 +46,10 @@ public class QuestionController {
         return "qna/updateForm";
     }
 
-    @PostMapping("questions/update/{index}")
-    public String updateQuestionInfo(@PathVariable int index, Question question, Model model) {
-        question.setIndex(index);
+    @PutMapping("questions/{index}")
+    public String updateQuestionInfo(@PathVariable int index, Question updateQuestion, Model model) {
+        Question question = questionRepository.findById(index).get();
+        question.updateQuestion(updateQuestion);
         questionRepository.save(question);
         return "redirect:/questions/" + index;
     }

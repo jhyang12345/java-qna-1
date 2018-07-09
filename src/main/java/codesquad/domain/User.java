@@ -11,8 +11,11 @@ public class User {
 
     @Column(length = 30, unique = true, nullable = false)
     private String userId;
+    @Column(length=30, nullable = false)
     private String password;
+    @Column(length=30, nullable = false)
     private String name;
+    @Column(length=30, nullable = false)
     private String email;
 
     public User() {
@@ -64,5 +67,12 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void updateUser(User user) {
+        setUserId(user.getUserId());
+        setPassword(user.getPassword());
+        setName(user.getName());
+        setEmail(user.getEmail());
     }
 }
