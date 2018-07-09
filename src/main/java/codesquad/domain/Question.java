@@ -1,12 +1,21 @@
 package codesquad.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Date;
 
+@Entity
 public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int index;
+
     private String writer;
     private String title;
     private String contents;
-    private int index;
     private Date date;
 
     public Question(){
@@ -41,7 +50,7 @@ public class Question {
         this.contents = contents;
     }
 
-    public int getIndex() {
+    public long getIndex() {
         return index;
     }
 
