@@ -71,6 +71,5 @@ public class Question {
         contents = updateQuestion.contents;
         date = updateQuestion.date;
 
-        writer = currentUser;
     }
 }

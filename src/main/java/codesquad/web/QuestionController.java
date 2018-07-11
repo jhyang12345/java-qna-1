@@ -3,6 +3,7 @@ package codesquad.web;
 import codesquad.domain.Question;
 import codesquad.domain.QuestionRepository;
 import codesquad.domain.User;
+import codesquad.util.SessionUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,24 +17,21 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    private User getCurrentUser(HttpSession session) {
-        return (User) session.getAttribute(UserController.SESSION_ATTR);
-    }
 
     @PostMapping("/questions")
     public String create(Question question, HttpSession session) {
-        User currentUser = getCurrentUser(session);
+        User currentUser = SessionUtility.getCurrentUser(session);
         if (currentUser == null) {
             return "redirect:/users/login";
         }
-        question.setWriter(getCurrentUser(session));
+        question.setWriter(SessionUtility.getCurrentUser(session));
         questionRepository.save(question);
         return "redirect:/";
     }
 
     @GetMapping("/questions/form")
     public String getQuestionForm(HttpSession session, Model model) {
-        User currentUser = getCurrentUser(session);
+        User currentUser = SessionUtility.getCurrentUser(session);
         if (currentUser == null) {
             return "redirect:/users/login";
         }
@@ -54,8 +52,8 @@ public class QuestionController {
             return "redirect:/";
 
         User questionUser = question.getWriter();
-        model.addAttribute("userName", questionUser.getName());
-        model.addAttribute("isWriter", questionUser.equalsUser(getCurrentUser(session)));
+        model.addAttribute("writer", questionUser);
+        model.addAttribute("isWriter", questionUser.equalsUser(SessionUtility.getCurrentUser(session)));
         model.addAttribute("question", question);
         return "/qna/show";
 
@@ -69,7 +67,7 @@ public class QuestionController {
         }
 
         User questionUser = maybeQuestion.get().getWriter();
-        User currentUser = getCurrentUser(session);
+        User currentUser = SessionUtility.getCurrentUser(session);
         if (!questionUser.equalsUser(currentUser)) {
             return "redirect:/questions/error";
         }
@@ -99,7 +97,7 @@ public class QuestionController {
             return "redirect:/";
         }
         Question question = maybeQuestion.get();
-        User currentUser = getCurrentUser(session);
+        User currentUser = SessionUtility.getCurrentUser(session);
         try {
             question.updateQuestion(updateQuestion, currentUser);
         } catch (IllegalArgumentException e) {

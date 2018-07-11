@@ -2,6 +2,7 @@ package codesquad.web;
 
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
+import codesquad.util.SessionUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @RequestMapping("/users")
 @Controller
 public class UserController {
-    public static final String SESSION_ATTR = "sessionedUser";
+
 
     @Autowired
     private UserRepository userRepository;
@@ -30,7 +31,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute(SESSION_ATTR);
+        SessionUtility.killSession(session);
         return "redirect:/";
     }
 
@@ -40,7 +41,7 @@ public class UserController {
         if (!maybeUser.isPresent()) {
             return "redirect:/users/login";
         }
-        session.setAttribute(SESSION_ATTR, maybeUser.get());
+        SessionUtility.setSession(session, maybeUser.get());
         return "redirect:/";
     }
 
@@ -74,7 +75,7 @@ public class UserController {
 
     @PutMapping("/{index}")
     public String updateUserInfo(@PathVariable long index, User user, HttpSession session, Model model) {
-        User sessionedUser = (User) session.getAttribute(SESSION_ATTR);
+        User sessionedUser = SessionUtility.getCurrentUser(session);
         Optional<User> maybeUser = userRepository.findById(index);
         if (!maybeUser.isPresent()) {
             return "redirect:/";
