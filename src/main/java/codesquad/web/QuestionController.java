@@ -1,6 +1,7 @@
 package codesquad.web;
 
 import codesquad.domain.*;
+import codesquad.dto.QnAObject;
 import codesquad.util.SessionUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,11 +56,9 @@ public class QuestionController {
 
         User questionUser = question.getWriter();
         List<Answer> answers = answerRepository.findAllByDeletedFalseAndQuestionId(index);
-        model.addAttribute("writer", questionUser);
-        model.addAttribute("isWriter", questionUser.equalsUser(SessionUtility.getCurrentUser(session)));
-        model.addAttribute("question", question);
-        model.addAttribute("answers", answers);
-        model.addAttribute("answersLength", answers.size());
+        QnAObject dtoObject = new QnAObject(questionUser, questionUser.equalsUser(SessionUtility.getCurrentUser(session)),
+                question, answers, answers.size());
+        model.addAttribute("dtoObject", dtoObject);
         return "/qna/show";
 
     }
@@ -81,8 +80,8 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @DeleteMapping("/questions/answers/{id}")
-    public String deleteAnswer(@PathVariable int id, HttpSession session){
+    @DeleteMapping("/questions/{questionId}/answers/{id}")
+    public String deleteAnswer(@PathVariable int questionId, @PathVariable int id, HttpSession session){
         User currentUser = SessionUtility.getCurrentUser(session);
         Answer answer = answerRepository.findById(id).get();
         if(!answer.isWriter(currentUser)) {
@@ -90,7 +89,7 @@ public class QuestionController {
         }
         answer.setDeleted();
         answerRepository.save(answer);
-        return "redirect:/questions/" + id;
+        return "redirect:/questions/" + questionId;
 
 
     }
@@ -101,6 +100,7 @@ public class QuestionController {
         if(currentUser == null) {
             return "redirect:/questions/error";
         }
+
         answer.setQuestion(questionRepository.findById(id).get());
         answer.setWriter(currentUser);
         answerRepository.save(answer);

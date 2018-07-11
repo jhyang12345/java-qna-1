@@ -39,10 +39,6 @@ public class Answer {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public User getWriter() {
         return writer;
     }
@@ -81,10 +77,6 @@ public class Answer {
 
     public void setDeleted() {
         this.deleted = true;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public boolean isWriter(User currentUser){

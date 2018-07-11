@@ -85,9 +85,7 @@ public class Question {
         }
 
         for (Answer answer : answers) {
-            if (answer.isDeleted()) {
-                continue;
-            }
+
             if (!answer.isWriter(writer)) {
                 return false;
             }
